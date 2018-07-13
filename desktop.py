@@ -3,23 +3,11 @@ from PIL import Image
 from datetime import datetime,timedelta
 from time import sleep
 
-utc = datetime.utcnow()-timedelta(hours=1)
-utc_str = str(utc)
-date = utc_str[:10].replace('-','')
-#give image a 3 minute window to load (maybe change to checking url)
-if utc.minute%10>3:
-	time = utc_str[11:15].replace(':','')+'000'
-else:
-	time = str(utc-timedelta(minutes=10))[11:15].replace(':','')+'000'
-
-#print(time)
-
 ...
 # Download the file from `url` and save it locally under `file_name`:
-imageDir = 'C:/Users/Russell/Desktop/Utilities/SatDesk/images/'
+imageDir = './images/'
 goes16 = 'https://cdn.star.nesdis.noaa.gov/GOES16/ABI/FD/GEOCOLOR/1808x1808.jpg'
 
-him = 'http://rammb-slider.cira.colostate.edu/data/imagery/{}/himawari---full_disk/geocolor/{}{}/'.format(date,date,time)
 lower_right = '01/001_001.png'
 lower_left = '/01/001_000.png'
 upper_left = '/01/000_000.png'
@@ -32,16 +20,27 @@ u16hoursbefore = '/imagery/20180711/himawari---full_disk/geocolor/20180711091000
 #updates every 10 minutes
 #2018 07 12 01 10 00
 
-def wait_for_internet_connection():
-	while True:
-		try:
-			response = urllib.request.urlopen('https://www.google.com/',timeout=1)
-			break
-		except:
-			sleep(.1)
-			pass
-			
-wait_for_internet_connection()
+utc = datetime.utcnow()
+utc_str = str(utc)
+date = utc_str[:10].replace('-','')
+time = utc_str[11:15].replace(':','')+'000'
+time = str(utc-timedelta(minutes=10))[11:15].replace(':','')+'000'
+him = 'http://rammb-slider.cira.colostate.edu/data/imagery/{}/himawari---full_disk/geocolor/{}{}/'.format(date,date,time)
+
+print(datetime.utcnow())
+				
+while True:
+        try:
+                response = urllib.request.urlretrieve(him+lower_right, imageDir+'him-8_lr.png')
+                break
+        except:
+                utc = utc-timedelta(minutes=10)
+                utc_str = str(utc)
+                date = utc_str[:10].replace('-','')
+                time = utc_str[11:15].replace(':','')+'000'
+                time = str(utc-timedelta(minutes=10))[11:15].replace(':','')+'000'
+                him = 'http://rammb-slider.cira.colostate.edu/data/imagery/{}/himawari---full_disk/geocolor/{}{}/'.format(date,date,time)
+                print(time)
 #print('downloading images')
 urllib.request.urlretrieve(goes16, imageDir+'goes16.jpg')
 urllib.request.urlretrieve(him+lower_right, imageDir+'him-8_lr.png')

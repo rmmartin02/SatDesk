@@ -1,1 +1,0 @@
-C:\Users\Russell\AppData\Local\Programs\Python\Python36\python.exe C:\Users\Russell\Desktop\Utilities\SatDesk\desktop.py

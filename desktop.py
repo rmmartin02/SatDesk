@@ -31,7 +31,7 @@ print(datetime.utcnow())
 count = 0
 while count < 100:
         try:
-                response = urllib.request.urlretrieve(him+lower_right, imageDir+'him-8_lr.png')
+                response = urllib.request.urlretrieve(him+lower_right, os.path.join(imageDir, 'him-8_lr.png'))
                 break
         except:
                 utc = utc-timedelta(minutes=10)
@@ -43,17 +43,17 @@ while count < 100:
                 count += 1
                 print(time)
 # print('downloading images')
-urllib.request.urlretrieve(goes16, imageDir+'goes16.jpg')
-urllib.request.urlretrieve(him+lower_right, imageDir+'him-8_lr.png')
-urllib.request.urlretrieve(him+lower_left, imageDir+'him-8_ll.png')
-urllib.request.urlretrieve(him+upper_left, imageDir+'him-8_ul.png')
-urllib.request.urlretrieve(him+upper_right, imageDir+'him-8_ur.png')
+urllib.request.urlretrieve(goes16, os.path.join(finalImageDir, 'goes16.png'))
+# Already go lr earlier ^
+urllib.request.urlretrieve(him+lower_left, os.path.join(imageDir, 'him-8_ll.png'))
+urllib.request.urlretrieve(him+upper_left, os.path.join(imageDir, 'him-8_ul.png'))
+urllib.request.urlretrieve(him+upper_right, os.path.join(imageDir, 'him-8_ur.png'))
 
 # merge him8 images
-image_ul = Image.open(imageDir+'him-8_ul.png')
-image_ur = Image.open(imageDir+'him-8_ur.png')
-image_ll = Image.open(imageDir+'him-8_ll.png')
-image_lr = Image.open(imageDir+'him-8_lr.png')
+image_ul = Image.open(os.path.join(imageDir, 'him-8_ul.png'))
+image_ur = Image.open(os.path.join(imageDir, 'him-8_ur.png'))
+image_ll = Image.open(os.path.join(imageDir, 'him-8_ll.png'))
+image_lr = Image.open(os.path.join(imageDir, 'him-8_lr.png'))
 
 (width, height) = image_ul.size
 
@@ -65,14 +65,14 @@ him8_image.paste(im=image_ul, box=(0, 0))
 him8_image.paste(im=image_ur, box=(width, 0))
 him8_image.paste(im=image_ll, box=(0, height))
 him8_image.paste(im=image_lr, box=(width, height))
-him8_image.save(imageDir+'him8.jpg')
+him8_image.save(os.path.join(finalImageDir, 'him8.png'))
 
 #resize and merge him8 and goes16 images
-image1 = Image.open(imageDir+'goes16.jpg')
-image2 = Image.open(imageDir+'him8.jpg')
+image1 = Image.open(os.path.join(finalImageDir, 'goes16.png'))
+image2 = Image.open(os.path.join(finalImageDir, 'him8.png'))
 
-height = 3840
-width = 2160
+height = 2160
+width = 3840
 
 image1 = image1.resize((int(width/2), height), Image.NEAREST)
 image2 = image2.resize((int(width/2), height), Image.NEAREST)
@@ -80,4 +80,4 @@ image2 = image2.resize((int(width/2), height), Image.NEAREST)
 result = Image.new('RGB', (width, height))
 result.paste(im=image1, box=(0, 0))
 result.paste(im=image2, box=(int(width/2), 0))
-result.save(imageDir+'final.bmp')
+result.save(os.path.join(finalImageDir, 'final.png'))
